@@ -250,6 +250,8 @@ int main() {
         cout << "4. Update a product" << endl;
         cout << "5. View all products" << endl;
         cout<<"6. Buy Product"<<endl; 
+        cout << "7. Add a wishlist" << endl;
+        cout << "8. View wishlist" << endl;
 	cout << "Q. Quit" << endl;
         cin >> choice;
 
@@ -364,8 +366,40 @@ int main() {
 		inventory.buyProduct();
     		break;
 		 }
+	case '7':
+	{
+    	string wishlist;
+    	cin.ignore();
+    	cout << "Enter your wishlist (separated by commas): ";
+    	getline(cin, wishlist);
+	
+	    ofstream file("require.csv", ios::out | ios::app);
+	    if (file.is_open()) {
+	        file << wishlist << endl;
+	        file.close();
+	        cout << "Wishlist added successfully." << endl;
+	        cout << "-----------------------------------------------------------" << endl;
+	    } else {
+	        cout << "Error: Could not open file require.csv" << endl;
+	    }
+	    break;
+	}
+	case '8':
+	{
+	    ifstream file("require.csv");
+	    if (file.is_open()) {
+	        string line;
+	        while (getline(file, line)) {
+	            cout << "Wishlist: " << line << endl;
+	        }
+	        file.close();
+	        cout << "-----------------------------------------------------------" << endl;
+	    } else {
+	        cout << "Error: Could not open file require.csv" << endl;
+	    }
+	    break;
+	}
 
-        
         case 'q':
         case 'Q':
             cout << "Goodbye!" << endl;
