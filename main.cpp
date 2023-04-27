@@ -71,7 +71,36 @@ class Inventory
         vector<Product> products;
     
     public:
-        void addProduct(Product product)
+        void buyProduct()
+    {
+        int id, quantity;
+        cout << "Enter the ID of the product you want to buy: ";
+        cin >> id;
+
+        Product* product = findProduct(id);
+        if (product == nullptr)
+        {
+            cout << "Product with ID " << id << " does not exist." << endl;
+            return;
+        }
+
+        cout << "Product found: " << product->getName() << " (ID: " << product->getId() << ")" << endl;
+        cout << "Price: $" << product->getPrice() << endl;
+
+        cout << "Enter the quantity you want to buy: ";
+        cin >> quantity;
+
+        if (quantity > product->getQuantity())
+        {
+            cout << "Quantity entered is greater than the available stock." << endl;
+            return;
+        }
+
+        product->setQuantity(product->getQuantity() - quantity);
+        cout << "Total cost: $" << (product->getPrice() * quantity) << endl;
+        cout << "Product purchased successfully!" << endl;
+    }
+	void addProduct(Product product)
         {
             bool found = false;
             for (auto& p : products)
@@ -220,7 +249,8 @@ int main() {
         cout << "3. Find a product" << endl;
         cout << "4. Update a product" << endl;
         cout << "5. View all products" << endl;
-        cout << "Q. Quit" << endl;
+        cout<<"6. Buy Product"<<endl; 
+	cout << "Q. Quit" << endl;
         cin >> choice;
 
         switch (choice) {
@@ -329,8 +359,12 @@ int main() {
         case '5': {
             inventory.printProduct();
             break;
-        }
-        
+     }
+	case '6':{
+		inventory.buyProduct();
+    		break;
+		 }
+
         
         case 'q':
         case 'Q':
