@@ -81,7 +81,6 @@ public:
 class Inventory
 {
 private:
-    vector<Product> purchasedProducts;
     vector<Product> products;
     vector<string> wishlist; // Add wishlist vector
 public:
@@ -483,41 +482,11 @@ void Inventory::buyProduct()
         cout << "Total cost: $" << (product->getPrice() * quantity) << endl;
         cout << "Product purchased successfully!" << endl;
 
-        purchasedProducts.push_back(*product);
-
         cout << "Do you want to buy anything else? (Y/N): ";
         cin >> choice;
     } while (choice == 'Y' || choice == 'y');
 
-    generateBill(); // Generate the bill for the purchased products
 }
-void Inventory::generateBill()
-{
-    cout << "--------------------------------------------------" << endl;
-    cout << "                     INVOICE                    " << endl;
-    cout << "--------------------------------------------------" << endl;
-    cout << "Invoice Date: " << getCurrentDate() << endl;
-    cout << "S. No.    Item Name         Code      Qty       Amount" << endl;
-    cout << "--------------------------------------------------" << endl;
-
-    float totalAmount = 0;
-    int itemCount = 1;
-
-    for (const auto& product : purchasedProducts)
-    {
-        float amount = product.getPrice() * product.getQuantity();
-        cout << itemCount << ".        " << product.getName() << "    " << product.getId() << "   " << product.getQuantity() << "   " << amount << endl;
-
-        totalAmount += amount;
-        itemCount++;
-    }
-
-    cout << "--------------------------------------------------" << endl;
-    cout << "Total Amount: " << totalAmount << endl;
-}
-
-
-
 
 
 int main()
@@ -526,10 +495,34 @@ int main()
 
     // Load inventory from file
     inventory.loadInventoryFromFile("inventory.csv");
-        inventory.loadWishlistFromFile("require.txt");
+    inventory.loadWishlistFromFile("require.txt");
 
     int choice;
-    do
+    bool isAdmin = false; // Flag to determine if user is admin
+
+    cout << "Are you an admin? (y/n): ";
+    char adminChoice;
+    cin >> adminChoice;
+    
+     if (adminChoice == 'y' || adminChoice == 'Y')
+    {
+        isAdmin = true;
+
+        cout << "Enter passcode: ";
+        string passcode;
+        cin >> passcode;
+
+        if (passcode != "admin123") // Replace "admin123" with your desired passcode
+        {
+            cout << "Incorrect passcode. Access denied." << endl;
+            cout << "Redirecting to Customer Menu......"<<endl;
+            isAdmin = false;
+        }
+    }
+
+    if (isAdmin)
+    {
+        do
     {
         cout << "------------------- Menu -------------------" << endl;
         cout << "1. Display Products" << endl;
@@ -584,6 +577,7 @@ int main()
         }
         case 4:
             inventory.buyProduct();
+            cout<<"Thanks for the purchase"<<endl;
             break;
         case 5:
         {
@@ -610,6 +604,54 @@ int main()
             cout << "Invalid choice. Please try again." << endl;
         }
     } while (choice != 9);
+    }
+    else
+    {
+        do
+        {
+            cout << "------------------- Customer Menu -------------------" << endl;
+            cout << "1. Display Products" << endl;
+            cout << "2. Buy Product" << endl;
+            cout << "3. Add to Wishlist" << endl;
+            cout << "4. View Wishlist" << endl;
+            cout << "5. Exit" << endl;
+            cout << "---------------------------------------------------" << endl;
+            cout << "Enter your choice (1-5): ";
+            cin >> choice;
+
+            switch (choice)
+            {
+            case 1:
+                inventory.displayProducts();
+                break;
+            case 2:
+                inventory.buyProduct();
+                cout << "Thanks for the purchase" << endl;
+                break;
+            case 3:{
+                 string product;
+            cin.ignore();
+            cout << "Enter the product you want to add to the wishlist: ";
+            getline(cin, product);
+            inventory.addToWishlist(product);
+            
+                break;
+                }
+            case 4:
+                inventory.viewWishlist();
+                break;
+            case 5:
+                // Save inventory and wishlist to files before exiting
+                inventory.saveInventoryToFile("inventory.csv");
+                inventory.saveWishlistToFile("require.txt");
+                cout << "Exiting program..." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+            }
+        } while (choice != 9);
+    }
 
     return 0;
 }
+
