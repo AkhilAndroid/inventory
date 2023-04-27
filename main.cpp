@@ -187,7 +187,6 @@ string getCurrentDate() {
             }
 
             file.close();
-            cout << "Inventory saved to " << filename << " successfully." << endl;
         } 
         else 
         {
@@ -238,7 +237,7 @@ string getCurrentDate() {
             }
 
             file.close();
-            cout << "Wishlist saved to " << filename << " successfully." << endl;
+            cout << "Saving..........." << endl;
         }
         else
         {
@@ -259,7 +258,6 @@ string getCurrentDate() {
             }
 
             file.close();
-            cout << "Wishlist loaded from " << filename << " successfully." << endl;
         }
         else
         {
@@ -644,6 +642,7 @@ int main()
                 // Save inventory and wishlist to files before exiting
                 inventory.saveInventoryToFile("inventory.csv");
                 inventory.saveWishlistToFile("require.txt");
+                
                 cout << "Exiting program..." << endl;
                 break;
             default:
