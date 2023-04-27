@@ -89,7 +89,11 @@ class Inventory
                 cout << "Product added successfully." << endl;
                 cout << "-----------------------------------------------------------" <<endl;
             }
-        }            
+        }    
+        vector<Product>& getProducts() {
+    		return products;
+	}
+        
 
         void removeProduct(int id)
         {
@@ -251,23 +255,29 @@ int main() {
         }
 
         case '3': {
-            int id;
-            cout << "Enter product id: ";
-            cin >> id;
-            Product* product = inventory.findProduct(id);
-            if (product) {
-                cout << "Name: " << product->getName() << endl;
-                cout << "Category: " << product->getCategory() << endl;
-                cout << "Price: $ " << product->getPrice() << endl;
-                cout << "Quantity: " << product->getQuantity() << endl;
-                cout << "-----------------------------------------------------------" <<endl;
-            }
-            else {
-                cout << "Product not found." << endl;
-                cout << "-----------------------------------------------------------" <<endl;
-            }
-            break;
+   	 string category;
+    	cout << "Enter product category: ";
+    	cin >> category;
+    
+  	  bool productFound = false;
+  	  for (auto& product : inventory.getProducts()) {
+ 	       if (product.getCategory() == category) {
+       	     cout << "ID: " << product.getId() << endl;
+       	     cout << "Name: " << product.getName() << endl;
+             cout << "Category: " << product.getCategory() << endl;
+             cout << "Price: $" << product.getPrice() << endl;
+             cout << "Quantity: " << product.getQuantity() << endl;
+             cout << "-----------------------------------------------------------" << endl;
+            productFound = true;
         }
+    }
+    
+  	  if (!productFound) {
+  	      cout << "No products found in the given category." << endl;
+    	      cout << "-----------------------------------------------------------" << endl;
+            }
+           break;
+       }	
 
         case '4': {
             int id;
