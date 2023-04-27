@@ -264,6 +264,35 @@ string getCurrentDate() {
             cout << "Error: Could not open file " << filename << endl;
         }
     }
+    void returnProduct()
+{
+    int id, quantity;
+    char choice;
+
+    do {
+        cout << "Enter the ID of the product you want to return: ";
+        cin >> id;
+
+        Product *product = findProduct(id);
+        if (product == nullptr)
+        {
+            cout << "Product with ID " << id << " does not exist." << endl;
+            continue;
+        }
+
+        cout << "Product found: " << product->getName() << " (ID: " << product->getId() << ")" << endl;
+
+        cout << "Enter the quantity you want to return: ";
+        cin >> quantity;
+
+        product->setQuantity(product->getQuantity() + quantity);
+        cout << "Product returned successfully!" << endl;
+
+        cout << "Do you want to return anything else? (Y/N): ";
+        cin >> choice;
+    } while (choice == 'Y' || choice == 'y');
+}
+
      void displayProducts();
      void updateProduct();
      void buyProduct();
@@ -494,7 +523,26 @@ int main()
     // Load inventory from file
     inventory.loadInventoryFromFile("inventory.csv");
     inventory.loadWishlistFromFile("require.txt");
+	
+	  std::ofstream requireFile("require.txt");
+    if (requireFile.is_open())
+    {
+        requireFile << "Products with stock below 5:\n";
 
+        for (const auto& product : inventory.getProducts())
+        {
+            if (product.getQuantity() < 5)
+            {
+                requireFile << "ID: " << product.getId() << ", Name: " << product.getName() << ", Quantity: " << product.getQuantity() << "\n";
+            }
+        }
+
+        requireFile.close();
+    }
+    else
+    {
+        cout << "Unable to create require.txt file." << endl;
+    }
     int choice;
     bool isAdmin = false; // Flag to determine if user is admin
 
@@ -530,6 +578,8 @@ int main()
         cout << "5. Add to Wishlist" << endl;
         cout << "6. View Wishlist" << endl;
         cout << "7. Update Products" << endl;
+        
+        cout << "8. Return the Product" << endl;
         cout << "9. Exit" << endl;
         cout << "--------------------------------------------" << endl;
         cout << "Enter your choice (1-9): ";
@@ -592,12 +642,17 @@ int main()
         case 7:
             inventory.updateProduct();
             break;
+        case 8:
+   	 inventory.returnProduct();
+   	 break;
+
         case 9:
             // Save inventory and wishlist to files before exiting
             inventory.saveInventoryToFile("inventory.csv");
             inventory.saveWishlistToFile("require.txt");
             cout << "Exiting program..." << endl;
             break;
+            
         default:
             cout << "Invalid choice. Please try again." << endl;
         }
@@ -612,7 +667,8 @@ int main()
             cout << "2. Buy Product" << endl;
             cout << "3. Add to Wishlist" << endl;
             cout << "4. View Wishlist" << endl;
-            cout << "5. Exit" << endl;
+            cout << "5. Return the Product"<<endl;
+            cout << "6. Exit" << endl;
             cout << "---------------------------------------------------" << endl;
             cout << "Enter your choice (1-5): ";
             cin >> choice;
@@ -638,13 +694,17 @@ int main()
             case 4:
                 inventory.viewWishlist();
                 break;
-            case 5:
+            case 6:
                 // Save inventory and wishlist to files before exiting
                 inventory.saveInventoryToFile("inventory.csv");
                 inventory.saveWishlistToFile("require.txt");
                 
                 cout << "Exiting program..." << endl;
                 break;
+                case 5:
+   		 inventory.returnProduct();
+   		 break;
+
             default:
                 cout << "Invalid choice. Please try again." << endl;
             }
