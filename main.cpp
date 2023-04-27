@@ -221,7 +221,6 @@ int main() {
         cout << "4. Update a product" << endl;
         cout << "5. View all products" << endl;
         cout << "6. Save inventory to file" << endl;
-        cout << "7. Load Inventory from file" << endl;
         cout << "Q. Quit" << endl;
         cin >> choice;
 
@@ -338,12 +337,7 @@ int main() {
             cout << "-----------------------------------------------------------" <<endl;
             break;
         }
-        case '7': {
-            
-            cout << "Inventory loaded from file." << endl;
-            cout << "-----------------------------------------------------------" <<endl;
-            break;
-        }
+        
         case 'q':
         case 'Q':
             cout << "Goodbye!" << endl;
