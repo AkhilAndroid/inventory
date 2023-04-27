@@ -220,7 +220,6 @@ int main() {
         cout << "3. Find a product" << endl;
         cout << "4. Update a product" << endl;
         cout << "5. View all products" << endl;
-        cout << "6. Save inventory to file" << endl;
         cout << "Q. Quit" << endl;
         cin >> choice;
 
@@ -331,16 +330,12 @@ int main() {
             inventory.printProduct();
             break;
         }
-        case '6': {
-            inventory.saveInventoryToFile("inventory.csv");
-            cout << "Inventory saved to file." << endl;
-            cout << "-----------------------------------------------------------" <<endl;
-            break;
-        }
+        
         
         case 'q':
         case 'Q':
             cout << "Goodbye!" << endl;
+            inventory.saveInventoryToFile("inventory.csv");
             cout << "-----------------------------------------------------------" <<endl;
             return 0;
         
