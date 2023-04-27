@@ -5,6 +5,7 @@
 #include <fstream>
 #include <set>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 
 class Product
@@ -80,38 +81,10 @@ public:
 class Inventory
 {
 private:
+    vector<Product> purchasedProducts;
     vector<Product> products;
     vector<string> wishlist; // Add wishlist vector
 public:
-    void buyProduct()
-    {
-        int id, quantity;
-        cout << "Enter the ID of the product you want to buy: ";
-        cin >> id;
-
-        Product *product = findProduct(id);
-        if (product == nullptr)
-        {
-            cout << "Product with ID " << id << " does not exist." << endl;
-            return;
-        }
-
-        cout << "Product found: " << product->getName() << " (ID: " << product->getId() << ")" << endl;
-        cout << "Price: $" << product->getPrice() << endl;
-
-        cout << "Enter the quantity you want to buy: ";
-        cin >> quantity;
-
-        if (quantity > product->getQuantity())
-        {
-            cout << "Quantity entered is greater than the available stock." << endl;
-            return;
-        }
-
-        product->setQuantity(product->getQuantity() - quantity);
-        cout << "Total cost: $" << (product->getPrice() * quantity) << endl;
-        cout << "Product purchased successfully!" << endl;
-    }
 
     void addProduct(Product product)
     {
@@ -170,6 +143,12 @@ public:
         return nullptr;
     }
 
+
+string getCurrentDate() {
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    return dt;
+}
 
 	void addToWishlist(const string& product)
     {
@@ -290,6 +269,8 @@ public:
     }
      void displayProducts();
      void updateProduct();
+     void buyProduct();
+    void generateBill();
 };
 void Inventory::displayProducts() {
     int choice;
@@ -469,6 +450,74 @@ void Inventory::updateProduct()
         cout << "Product with ID " << productId << " not found." << endl;
     }
 }
+
+void Inventory::buyProduct()
+{
+    int id, quantity;
+    char choice;
+
+    do {
+        cout << "Enter the ID of the product you want to buy: ";
+        cin >> id;
+
+        Product *product = findProduct(id);
+        if (product == nullptr)
+        {
+            cout << "Product with ID " << id << " does not exist." << endl;
+            continue;
+        }
+
+        cout << "Product found: " << product->getName() << " (ID: " << product->getId() << ")" << endl;
+        cout << "Price: $" << product->getPrice() << endl;
+
+        cout << "Enter the quantity you want to buy: ";
+        cin >> quantity;
+
+        if (quantity > product->getQuantity())
+        {
+            cout << "Quantity entered is greater than the available stock." << endl;
+            continue;
+        }
+
+        product->setQuantity(product->getQuantity() - quantity);
+        cout << "Total cost: $" << (product->getPrice() * quantity) << endl;
+        cout << "Product purchased successfully!" << endl;
+
+        purchasedProducts.push_back(*product);
+
+        cout << "Do you want to buy anything else? (Y/N): ";
+        cin >> choice;
+    } while (choice == 'Y' || choice == 'y');
+
+    generateBill(); // Generate the bill for the purchased products
+}
+void Inventory::generateBill()
+{
+    cout << "--------------------------------------------------" << endl;
+    cout << "                     INVOICE                    " << endl;
+    cout << "--------------------------------------------------" << endl;
+    cout << "Invoice Date: " << getCurrentDate() << endl;
+    cout << "S. No.    Item Name         Code      Qty       Amount" << endl;
+    cout << "--------------------------------------------------" << endl;
+
+    float totalAmount = 0;
+    int itemCount = 1;
+
+    for (const auto& product : purchasedProducts)
+    {
+        float amount = product.getPrice() * product.getQuantity();
+        cout << itemCount << ".        " << product.getName() << "    " << product.getId() << "   " << product.getQuantity() << "   " << amount << endl;
+
+        totalAmount += amount;
+        itemCount++;
+    }
+
+    cout << "--------------------------------------------------" << endl;
+    cout << "Total Amount: " << totalAmount << endl;
+}
+
+
+
 
 
 int main()
