@@ -255,29 +255,57 @@ int main() {
         }
 
         case '3': {
-   	 string category;
-    	cout << "Enter product category: ";
-    	cin >> category;
-    
-  	  bool productFound = false;
-  	  for (auto& product : inventory.getProducts()) {
- 	       if (product.getCategory() == category) {
-       	     cout << "ID: " << product.getId() << endl;
-       	     cout << "Name: " << product.getName() << endl;
-             cout << "Category: " << product.getCategory() << endl;
-             cout << "Price: $" << product.getPrice() << endl;
-             cout << "Quantity: " << product.getQuantity() << endl;
-             cout << "-----------------------------------------------------------" << endl;
-            productFound = true;
+    char searchOption;
+    cout << "Search by:\n";
+    cout << "1. ID\n";
+    cout << "2. Category\n";
+    cout << "Enter your choice: ";
+    cin >> searchOption;
+
+    if (searchOption == '1') {
+        int id;
+        cout << "Enter product ID: ";
+        cin >> id;
+
+        Product* product = inventory.findProduct(id);
+        if (product) {
+            cout << "Name: " << product->getName() << endl;
+            cout << "Category: " << product->getCategory() << endl;
+            cout << "Price: $" << product->getPrice() << endl;
+            cout << "Quantity: " << product->getQuantity() << endl;
+            cout << "-----------------------------------------------------------" << endl;
+        } else {
+            cout << "Product not found." << endl;
+            cout << "-----------------------------------------------------------" << endl;
         }
-    }
-    
-  	  if (!productFound) {
-  	      cout << "No products found in the given category." << endl;
-    	      cout << "-----------------------------------------------------------" << endl;
+    } else if (searchOption == '2') {
+        string category;
+        cout << "Enter product category: ";
+        cin >> category;
+
+        bool productFound = false;
+        for (auto& product : inventory.getProducts()) {
+            if (product.getCategory() == category) {
+                cout << "ID: " << product.getId() << endl;
+                cout << "Name: " << product.getName() << endl;
+                cout << "Category: " << product.getCategory() << endl;
+                cout << "Price: $" << product.getPrice() << endl;
+                cout << "Quantity: " << product.getQuantity() << endl;
+                cout << "-----------------------------------------------------------" << endl;
+                productFound = true;
             }
-           break;
-       }	
+        }
+
+        if (!productFound) {
+            cout << "No products found in the given category." << endl;
+            cout << "-----------------------------------------------------------" << endl;
+        }
+    } else {
+        cout << "Invalid choice. Please try again." << endl;
+        cout << "-----------------------------------------------------------" << endl;
+    }
+    break;
+}	
 
         case '4': {
             int id;
